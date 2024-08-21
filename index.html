@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Management</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Car Management System</h1>
+        
+        <div class="d-flex justify-content-center mb-3">
+            <button class="btn btn-primary me-2" onclick="getData()">GET</button>
+            <button class="btn btn-warning me-2" onclick="erase()">RESET</button>
+        </div>
+
+        <div class="d-flex align-items-center mb-3">
+            <button class="btn btn-danger me-2" onclick="deleteIDFunc()">DELETE</button>
+            <input type="text" class="form-control" id="deleteID" placeholder="Enter ID to delete" style="max-width: 200px;">
+        </div>
+
+        <div class="mb-4">
+            <h4>Add a New Car</h4>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="IDTag" placeholder="ID">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="brandTag" placeholder="Brand">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="modelTag" placeholder="Model">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="colorTag" placeholder="Color">
+                </div>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-success" onclick="add()">ADD</button>
+            </div>
+        </div>
+
+        <div id="wrapper" class="mt-4">
+            <!-- Car data will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const getData = async () => {
+            const cars = await axios.get("http://localhost:3000/cars")
+            
+            wrapper.innerHTML = cars.data.map(car => 
+             `
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">${car.brand} ${car.model}</h5>
+                    <p class="card-text">Color: ${car.color} | ID: ${car.id}</p>
+                </div>
+            </div>
+            `).join("")
+        };
+
+        const erase = () => wrapper.innerHTML = "";
+
+        const deleteIDFunc = () => {
+            const idDeleted = document.getElementById('deleteID').value;
+
+            axios.delete(`http://localhost:3000/cars/${idDeleted}`)
+            .then(res => console.log(res.data))
+        }
+
+        const add = () => {
+            const idAdd = document.getElementById('IDTag').value;
+            const brandAdd = document.getElementById('brandTag').value;
+            const modelAdd = document.getElementById('modelTag').value;
+            const colorAdd = document.getElementById('colorTag').value;
+            
+            axios.post("http://localhost:3000/cars/", 
+            { "id": idAdd, "brand": brandAdd, "model": modelAdd, "color": colorAdd })
+            .then(res => console.log(res.data))
+        }
+    </script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <button onclick="getData()">GET</button>
+    <button onclick="erase()">RESET</button><br>
+    <button onclick="deleteIDFunc()">DELETE</button><input type="text" id="deleteID"><br>
+    <button onclick="add()">ADD</button> id: <input type="text" id="IDTag">
+     brand: <input type="text" id="brandTag">
+     model: <input type="text" id="modelTag">
+     color: <input type="text" id="colorTag">
+    <div id="wrapper"></div>
+
+    
+    <script>
+        const getData = async () => {
+            const cars = await axios.get("http://localhost:3000/cars")
+            console.log(cars);
+            
+            wrapper.innerHTML = cars.data.map(car => 
+             `
+            <div>
+                brand : ${car.brand} |
+                model : ${car.model} |
+                color : ${car.color} |
+                id : ${car.id} 
+            </div>
+            <br><br>
+            `).join("")
+        };
+
+        const erase = () => wrapper.innerHTML = "";
+
+        const deleteIDFunc = () => {
+            const idDeleted = document.getElementById('deleteID').value;
+
+            axios.delete(`http://localhost:3000/cars/${idDeleted}`)
+            .then(res => console.log(res.data))
+        }
+
+        const add = () => {
+            const idAdd = document.getElementById('IDTag').value;
+            const brandAdd = document.getElementById('brandTag').value;
+            const modelAdd = document.getElementById('modelTag').value;
+            const colorAdd = document.getElementById('colorTag').value;
+            
+            axios.post("http://localhost:3000/cars/", 
+            { "id": idAdd, "brand": brandAdd, "model": modelAdd, "color": colorAdd })
+            .then(res => console.log(res.data))
+        }
+    </script>
+  </body>
+</html> -->
